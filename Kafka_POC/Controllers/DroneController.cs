@@ -20,7 +20,7 @@ namespace Kafka_POC.Controllers
         {
             try
             {
-                _logger.LogInformation($"Dados do drone {droneDados.Drone_Id} inserido com sucesso!");
+                _logger.LogInformation($"Dados do drone {droneDados.DroneId} inserido com sucesso!");
 
                 GeoCoordinate coordinate = new GeoCoordinate(droneDados.Latitude, droneDados.Longitude);
 
@@ -42,7 +42,7 @@ namespace Kafka_POC.Controllers
             {
                 foreach(DroneDados droneDados in dados)
                 {
-                    _logger.LogInformation($"Dados do drone {droneDados.Drone_Id} inserido com sucesso!");
+                    _logger.LogInformation($"Dados do drone {droneDados.DroneId} inserido com sucesso!");
 
                 }
 

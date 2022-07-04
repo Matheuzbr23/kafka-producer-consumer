@@ -1,3 +1,7 @@
+using Kafka_POC.Interfaces;
+using Kafka_POC.Jobs;
+using Kafka_POC.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +10,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<IProducer, ProducerService>();
+builder.Services.AddSingleton<IConsumer, ConsumerService>();
+builder.Services.AddHostedService<ProducerBackgroundService>();
+builder.Services.AddHostedService<ConsumerBackgroundService>();
+
 
 var app = builder.Build();
 
