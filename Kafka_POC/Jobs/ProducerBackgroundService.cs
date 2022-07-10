@@ -6,7 +6,7 @@ namespace Kafka_POC.Jobs
     {
         private readonly ILogger<ProducerBackgroundService> _logger;
         private readonly IProducer _producerService;
-        private readonly int _qtdDadosMock;
+        private readonly int _quantityMock;
         private readonly int _secondsBetweenExecution;
         private readonly bool _producerIsActive;
 
@@ -15,8 +15,8 @@ namespace Kafka_POC.Jobs
             _logger = logger;
             _producerService = producerService;
 
-            if (!int.TryParse(configuration["QtdDadosMock"], out _qtdDadosMock))
-                _qtdDadosMock = 10;
+            if (!int.TryParse(configuration["QuantityMock"], out _quantityMock))
+                _quantityMock = 10;
 
             if (!int.TryParse(configuration["SecondsBetweenExecution"], out _secondsBetweenExecution))
                 _secondsBetweenExecution = 10000;
@@ -31,11 +31,11 @@ namespace Kafka_POC.Jobs
             {
                 if (_producerIsActive)
                 {
-                    _logger.LogInformation($"PRODUCER: Enviando {_qtdDadosMock} mensagens de dados coletados.");
+                    _logger.LogInformation($"PRODUCER: Enviando {_quantityMock} mensagens de dados coletados.");
 
-                    await _producerService.InsertMany(_qtdDadosMock);
+                    await _producerService.InsertMany(_quantityMock);
 
-                    await Task.Delay(_secondsBetweenExecution, stoppingToken);
+                    await Task.Delay(_secondsBetweenExecution*1000, stoppingToken);
                 }
             }
         }
