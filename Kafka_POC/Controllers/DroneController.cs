@@ -1,6 +1,7 @@
-﻿using GeoCoordinatePortable;
+﻿using Kafka_POC.Interfaces;
 using Kafka_POC.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Kafka_POC.Controllers
 {
@@ -9,9 +10,11 @@ namespace Kafka_POC.Controllers
     public class DroneController : ControllerBase
     {
         private readonly ILogger<DroneController> _logger;
+        private readonly IProducer _producer;
 
-        public DroneController(ILogger<DroneController> logger)
+        public DroneController(ILogger<DroneController> logger, IProducer producer)
         {
+            _producer = producer;
             _logger = logger;
         }
 
@@ -22,13 +25,13 @@ namespace Kafka_POC.Controllers
             {
                 _logger.LogInformation($"Dados do drone {droneDados.DroneId} inserido com sucesso!");
 
-                GeoCoordinate coordinate = new GeoCoordinate(droneDados.Latitude, droneDados.Longitude);
+                _producer.Insert(droneDados);
 
                 return Ok();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao inserir dados do Drone");
+                _logger.LogError(ex, $"Erro ao inserir dados do Drone. {JsonConvert.SerializeObject(droneDados)}.");
 
                 return BadRequest(ex.Message);
             }
@@ -42,8 +45,9 @@ namespace Kafka_POC.Controllers
             {
                 foreach(DroneDados droneDados in dados)
                 {
-                    _logger.LogInformation($"Dados do drone {droneDados.DroneId} inserido com sucesso!");
+                    _producer.Insert(droneDados);
 
+                    _logger.LogInformation($"Dados do drone {droneDados.DroneId} inserido com sucesso!");
                 }
 
                 return Ok();

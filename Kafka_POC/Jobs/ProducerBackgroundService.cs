@@ -31,7 +31,7 @@ namespace Kafka_POC.Jobs
             {
                 if (_producerIsActive)
                 {
-                    _logger.LogInformation($"Producer: Enviando {_qtdDadosMock} mensagens de dados coletados.");
+                    _logger.LogInformation($"PRODUCER: Enviando {_qtdDadosMock} mensagens de dados coletados.");
 
                     await _producerService.InsertMany(_qtdDadosMock);
 

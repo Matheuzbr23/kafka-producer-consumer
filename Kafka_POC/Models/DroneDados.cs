@@ -6,20 +6,16 @@ namespace Kafka_POC.Models
     {
         public int DroneId { get; set; }
 
-        [MaxLength(90)]
-        [MinLength(-90)]
+        [Range(-90,90)]
         public double Latitude { get; set; }
 
-        [MaxLength(180)]
-        [MinLength(-180)]
+        [Range(-180, 180)]
         public double Longitude { get; set; }
 
-        [MaxLength(40)]
-        [MinLength(-25)]
+        [Range(-25,40)]
         public int Temperatura { get; set; }
 
-        [MaxLength(100)]
-        [MinLength(0)]
+        [Range(0,100)]
         public int Umidade { get; set; }
         public bool RastreioAtivo {get;set;}
     }

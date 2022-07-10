@@ -30,39 +30,40 @@ namespace Kafka_POC.Jobs
         {
             try
             {
-                while (!stoppingToken.IsCancellationRequested)
+                using var consumer = new ConsumerBuilder<Ignore, string>(_consumerConfig).Build();
+
+                consumer.Subscribe(_topic);
+
+                try
                 {
-                    using var consumer = new ConsumerBuilder<Ignore, string>(_consumerConfig).Build();
-
-                    consumer.Subscribe(_topic);
-
-                    try
+                    while (!stoppingToken.IsCancellationRequested)
                     {
-                        while (true)
-                        {
+
+                        await Task.Run(() => { 
                             var cr = consumer.Consume(stoppingToken);
 
                             var dados = JsonConvert.DeserializeObject<DroneDados>(cr.Message.Value);
 
-                            if(dados is not null)
+                            if (dados is not null)
                             {
-                                await _consumerService.ProcessarDados(dados);
+                                _consumerService.ProcessarDados(dados);
                             }
                             else
                             {
                                 _logger.LogError($"Erro ao consumir dados. Payload invalido: {cr.Message.Value}");
                             }
-                        }
+                        }, stoppingToken);
+                        
                     }
-                    catch (OperationCanceledException ex)
-                    {
-                        consumer.Close();
-                        _logger.LogWarning(ex, "Cancelada a execução do Consumer.");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Erro ao consumir dados.");
-                    }
+                }
+                catch (OperationCanceledException ex)
+                {
+                    consumer.Close();
+                    _logger.LogWarning(ex, "Cancelada a execução do Consumer.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Erro ao consumir dados.");
                 }
             }
             catch (Exception ex)

@@ -56,7 +56,7 @@ namespace Kafka_POC.Services
                     }
                 }
 
-                _logger.LogInformation($"Concluído o envio de {quantidade} mensagens");
+                _logger.LogInformation($"Concluído o envio de {quantidade} mensagens.");
             }
             catch (Exception ex)
             {
